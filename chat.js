@@ -1,5 +1,5 @@
 (function() {
-  // --- Inject styles ---
+  // --- Inject CSS ---
   const style = document.createElement('style');
   style.textContent = `
     #chat-button {
@@ -66,7 +66,7 @@
   document.head.appendChild(style);
 
   // --- Inject HTML ---
-  const chatHTML = `
+  const html = `
     <div id="chat-window">
       <div id="chat-header">AI Chat</div>
       <div id="chat-messages"></div>
@@ -78,10 +78,10 @@
     <button id="chat-button">💬</button>
   `;
   const container = document.createElement('div');
-  container.innerHTML = chatHTML;
+  container.innerHTML = html;
   document.body.appendChild(container);
 
-  // --- Behavior ---
+  // --- Add behavior ---
   const chatButton = document.getElementById('chat-button');
   const chatWindow = document.getElementById('chat-window');
   const sendBtn = document.getElementById('send-btn');
@@ -92,23 +92,24 @@
     chatWindow.style.display = chatWindow.style.display === 'flex' ? 'none' : 'flex';
   });
 
-  function appendMessage(sender, text) {
-    const div = document.createElement('div');
-    div.innerHTML = `<b>${sender}:</b> ${text}`;
-    messages.appendChild(div);
-    messages.scrollTop = messages.scrollHeight;
-  }
+  sendBtn.addEventListener('click', sendMessage);
+  input.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendMessage();
+  });
 
   function sendMessage() {
     const text = input.value.trim();
     if (!text) return;
     appendMessage('You', text);
     input.value = '';
+    // Placeholder for LLM reply
     setTimeout(() => appendMessage('Bot', 'This is a mock reply!'), 600);
   }
 
-  sendBtn.addEventListener('click', sendMessage);
-  input.addEventListener('keypress', e => {
-    if (e.key === 'Enter') sendMessage();
-  });
+  function appendMessage(sender, text) {
+    const div = document.createElement('div');
+    div.innerHTML = `<b>${sender}:</b> ${text}`;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  }
 })();
